@@ -1,5 +1,10 @@
 services:
   qsl-card-workshop:
+    # Uses the pre-built image from GitHub Container Registry if it's
+    # reachable; otherwise builds it locally from the Dockerfile in this
+    # folder. Run `docker compose up -d --build` to force a local build
+    # (e.g. after editing index.html/css/js yourself).
+    image: ghcr.io/babdor/qsl_card:latest
     build: .
     ports:
       - "8080:80"

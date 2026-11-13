@@ -6,7 +6,24 @@ details, customize colors/fonts/layout, and export print-ready JPG/PNG/PDF
 files. No account, no server-side processing, no data leaves your computer.
 
 This repo runs the whole thing inside a small Docker container, so you don't
-need to install anything except Docker itself.
+need to install anything except Docker itself. A ready-made container image
+is built automatically by GitHub Actions every time this repo changes, so
+you don't even need to build it yourself.
+
+## Quickest way to try it
+
+If you just want to run it and don't care about editing the code, skip
+cloning the repo entirely. Install Docker Desktop (step 1 below), then run:
+
+```
+docker run -d -p 8080:80 --name qsl-card-workshop --restart unless-stopped ghcr.io/babdor/qsl_card:latest
+```
+
+and open <http://localhost:8080>. That's it. To stop it later:
+`docker stop qsl-card-workshop && docker rm qsl-card-workshop`.
+
+For anything beyond "just run it" (changing a default, adding a template),
+use the full steps below instead.
 
 ## Run it (step by step)
 
@@ -51,9 +68,10 @@ Run this command:
 docker compose up -d
 ```
 
-What this does: it builds a small web server image, starts it, and leaves
-it running in the background (`-d` = "detached"). The first run takes a
-minute or two; after that it starts in a couple of seconds.
+What this does: it fetches the pre-built web server image (or builds one
+locally from the `Dockerfile` if the pre-built one isn't reachable), starts
+it, and leaves it running in the background (`-d` = "detached"). The first
+run takes a minute or two; after that it starts in a couple of seconds.
 
 ### 5. Open it in your browser
 
@@ -106,7 +124,10 @@ fonts/            19 self-hosted font files used by the built-in templates,
                   loaded by js/app.js via the FontFace API
 Dockerfile        Builds a tiny nginx image that serves the files above
 nginx.conf        Web server config (caching, gzip)
-docker-compose.yml One-command way to build + run the container
+docker-compose.yml One-command way to run (or build) the container
+.github/workflows/docker-publish.yml
+                  Builds the image and publishes it to GitHub Container
+                  Registry on every push to main and every version tag
 ```
 
 Originally this was a single ~580KB HTML file with all the CSS, JavaScript,
